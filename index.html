@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OptiLab Neón - Kevin David Ochoa Correa</title>
+    <style>
+        :root {
+            --bg-dark: #0b0e14;
+            --panel-bg: #161b22;
+            --accent-neon: #00f0ff;
+            --pink-neon: #ff007f;
+            --green-neon: #00ff66;
+            --yellow-neon: #ffff00;
+            --border-color: #30363d;
+            --text-color: #f0f6fc;
+            --subtext-color: #8b949e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+            touch-action: manipulation;
+        }
+
+        /* --- NAV FLUIDO A TAMAÑO COMPLETO --- */
+        nav {
+            width: 100%;
+            background: rgba(22, 27, 34, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 30px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-links-left,
+        .nav-links-right {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-links-left a,
+        .nav-links-right a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .nav-links-left a:hover,
+        .nav-links-right a:hover {
+            color: var(--accent-neon);
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo-img {
+            height: 42px;
+            width: auto;
+            border-radius: 8px;
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+            border: 1px solid var(--accent-neon);
+        }
+
+        .logo-title {
+            font-size: 11px;
+            font-weight: bold;
+            color: var(--accent-neon);
+            margin-top: 4px;
+            letter-spacing: 1.5px;
+        }
+
+        .portfolio-btn-nav {
+            background: linear-gradient(135deg, var(--pink-neon), #7000ff);
+            color: white !important;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: bold !important;
+            box-shadow: 0 0 10px rgba(255, 0, 127, 0.4);
+            transition: transform 0.2s !important;
+        }
+
+        .portfolio-btn-nav:hover {
+            transform: scale(1.05);
+        }
+
+        /* --- CONTENEDOR PRINCIPAL PANTALLA COMPLETA --- */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            width: 100%;
+            flex: 1;
+        }
+
+        /* LIENZO RESPONSIVE 100% ANCHO */
+        .canvas-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        canvas {
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            background: #04060a;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            touch-action: none;
+            width: 100%;
+            max-height: 70vh;
+            object-fit: contain;
+            cursor: crosshair;
+        }
+
+        /* PANEL DE CONTROL FLUIDO */
+        .controls-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: space-around;
+            align-items: center;
+            background: var(--panel-bg);
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            width: 100%;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        input[type="color"] {
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 6px;
+            cursor: pointer;
+            background: none;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--accent-neon), #7000ff);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+
+        .btn:hover,
+        .btn:active {
+            transform: scale(0.97);
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.5);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff0055, #990033);
+        }
+
+        .btn-portfolio {
+            background: linear-gradient(135deg, #00f0ff, #ff007f);
+            font-size: 14px;
+            padding: 12px 20px;
+        }
+
+        /* --- SECCIONES DE INFORMACIÓN EXTENDIDA Y TEORÍA DE ÓPTICA --- */
+        .info-section {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            width: 100%;
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            width: 100%;
+        }
+
+        h2 {
+            color: var(--pink-neon);
+            margin-bottom: 12px;
+            font-size: 22px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        h3 {
+            color: var(--accent-neon);
+            margin: 12px 0 6px 0;
+            font-size: 16px;
+        }
+
+        ul,
+        ol {
+            padding-left: 20px;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        p {
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .formula {
+            background: #0d1117;
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-family: monospace;
+            border-left: 3px solid var(--accent-neon);
+            color: var(--accent-neon);
+            font-size: 14px;
+            margin: 12px 0;
+        }
+
+        .card {
+            background: #0d1117;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* --- FOOTER Y AGRADECIMIENTOS --- */
+        footer {
+            width: 100%;
+            background: #07090e;
+            border-top: 1px solid var(--border-color);
+            padding: 30px 20px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        footer h3 {
+            color: var(--accent-neon);
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        footer p {
+            color: var(--subtext-color);
+            font-size: 14px;
+            margin: 6px 0;
+        }
+
+        footer a {
+            color: var(--pink-neon);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 10px 15px;
+            }
+
+            .nav-links-left,
+            .nav-links-right {
+                font-size: 12px;
+                gap: 10px;
+            }
+
+            .controls-panel {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAV CON LOGO Y LINK AL PORTAFOLIO -->
+    <nav>
+        <div class="nav-links-left">
+            <a href="#juego">Laboratorio</a>
+            <a href="#guias">Instrucciones</a>
+        </div>
+
+        <a href="https://kevin-ochoa-correa.github.io/kevin_ochoa/" target="_blank" class="logo-container">
+            <img src="watermarked_img_2987662622360577778.jpg" alt="Logo Espejos Planos" class="logo-img">
+            <span class="logo-title">OPTI-LAB</span>
+        </a>
+
+        <div class="nav-links-right">
+            <a href="#optica-teoria">Teoría Óptica</a>
+            <a href="https://kevin-ochoa-correa.github.io/kevin_ochoa/" target="_blank" class="portfolio-btn-nav">🌐
+                Portafolio</a>
+        </div>
+    </nav>
+
+    <!-- ÁREA PRINCIPAL PANTALLA COMPLETA -->
+    <div class="main-container" id="juego">
+
+        <div class="canvas-wrapper">
+            <canvas id="opticsCanvas" width="1200" height="550"></canvas>
+        </div>
+
+        <!-- PANEL DE CONTROLES FLUIDO -->
+        <div class="controls-panel">
+            <div class="control-group">
+                <label>🎨 Color Láser:</label>
+                <input type="color" id="laserColor" value="#00f0ff">
+            </div>
+
+            <button class="btn" id="addMirrorBtn">➕ Añadir Espejo</button>
+            <button class="btn btn-danger" id="clearRaysBtn">🗑️ Borrar Rayos</button>
+            <button class="btn btn-danger" id="clearMirrorsBtn">🗑️ Borrar Espejos</button>
+            <button class="btn" id="randomTargetBtn">🎯 Mover Diana</button>
+        </div>
+
+        <!-- INFORMACIÓN EXTENDIDA SOBRE ÓPTICA Y ESPEJOS -->
+        <div class="info-section">
+
+            <div class="info-grid" id="guias">
+                <div>
+                    <h2>📱 Modo de Uso e Indicadores</h2>
+                    <ul>
+                        <li><b>Mover Espejos:</b> Mantén presionado y arrastra el <b>nodo azul central</b>.</li>
+                        <li><b>Rotación 360°:</b> Mantén presionado y arrastra el <b>nodo verde del extremo</b>. Verás
+                            el ángulo actual en tiempo real.</li>
+                        <li><b>Crear Rayos:</b> Toca o haz clic en un espacio vacío y arrastra para orientar el rayo de
+                            luz.</li>
+                        <li><b>Ángulos de Incidencia:</b> Los ángulos $\theta_i$ y $\theta_r$ se mostrarán en amarillo
+                            sobre el punto de rebote.</li>
+                    </ul>
+                </div>
+
+                <div id="optica-teoria">
+                    <h2>🌈 Fundamentos de la Óptica Física</h2>
+                    <p>La <b>óptica</b> es la rama de la física que estudia el comportamiento, las propiedades de la luz
+                        y sus interacciones con la materia.</p>
+                    <p>Se divide principalmente en dos enfoques:</p>
+                    <ul>
+                        <li><b>Óptica Geométrica:</b> Trata a la luz como un conjunto de rayos rectos, ignorando su
+                            naturaleza ondulatoria para estudiar la reflexión y refracción en espejos y lentes.</li>
+                        <li><b>Óptica Física:</b> Considera la luz como una onda electromagnética, explicando fenómenos
+                            de interferencia, difracción y polarización.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- TEORÍA PROFUNDA SOBRE ESPEJOS -->
+            <div>
+                <h2>🪞 Estudio Exhaustivo sobre los Espejos</h2>
+                <div class="info-grid">
+                    <div class="card">
+                        <h3>1. Espejos Planos (Simulación Actual)</h3>
+                        <p>Superficie lisa y pulida que produce una reflexión regular de la luz.</p>
+                        <div class="formula">
+                            Ley Fundamental: θi (Ángulo de Incidencia) = θr (Ángulo de Reflexión)
+                        </div>
+                        <ul>
+                            <li><b>Imagen Virtual:</b> Se forma detrás del espejo por la prolongación de los rayos.</li>
+                            <li><b>Aumento Lateral M = 1:</b> La imagen es exactamente del mismo tamaño que el objeto
+                                original.</li>
+                            <li><b>Inversión Especular:</b> Mantiene la orientación vertical (derecha) pero invierte el
+                                eje izquierda-derecha.</li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <h3>2. Espejos Esféricos (Curvos)</h3>
+                        <p>Superficies reflectantes que forman parte de una esfera imaginaria:</p>
+                        <ul>
+                            <li><b>Espejos Cóncavos:</b> Curvados hacia adentro. Concentran los rayos en un punto
+                                llamado <i>foco (F)</i>. Pueden formar imágenes reales o virtuales e invertidas según la
+                                distancia.</li>
+                            <li><b>Espejos Convexos:</b> Curvados hacia afuera. Divergen la luz y forman siempre
+                                imágenes virtuales, derechas y de menor tamaño.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN DEL CREADOR Y ENLACE A PORTAFOLIO DIGITAL -->
+            <div class="info-grid" id="contacto">
+                <div class="card">
+                    <h2>👨‍💻 Creador del Proyecto</h2>
+                    <p><b>Desarrollador:</b> Kevin David Ochoa Correa</p>
+                    <p>Proyecto interactivo enfocado en la divulgación científica y simulación de la física moderna
+                        usando tecnologías HTML5 Canvas API y arquitectura Web Responsive.</p>
+                    <br>
+                    <a href="https://kevin-ochoa-correa.github.io/kevin_ochoa/" target="_blank"
+                        class="btn btn-portfolio">
+                        🚀 Visitar mi Portafolio Digital
+                    </a>
+                </div>
+
+                <div class="card">
+                    <h2>🙏 Agradecimientos Especiales</h2>
+                    <p>Expreso un agradecimiento a todos los docentes, ingenieros e instructores que apoyan el
+                        desarrollo de software educativo, fomentando el aprendizaje dinámico e interactivo de las
+                        ciencias exactas.</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- FOOTER CON ENLACE DIRECTO -->
+    <footer>
+        <h3>OPTI-LAB - Simulación e Investigación de Óptica Física</h3>
+        <p>Creado por <b>Kevin David Ochoa Correa</b></p>
+        <p>🔗 Conoce más proyectos en mi <a href="https://kevin-ochoa-correa.github.io/kevin_ochoa/"
+                target="_blank">Portafolio Digital</a></p>
+        <p>© 2026 Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('opticsCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const laserColorInput = document.getElementById('laserColor');
+        const addMirrorBtn = document.getElementById('addMirrorBtn');
+        const clearRaysBtn = document.getElementById('clearRaysBtn');
+        const clearMirrorsBtn = document.getElementById('clearMirrorsBtn');
+        const randomTargetBtn = document.getElementById('randomTargetBtn');
+
+        let mirrors = [
+            { x: 600, y: 350, length: 180, angle: 0 }
+        ];
+        let emitters = [];
+        let target = { x: 1000, y: 200, radius: 30 };
+
+        let draggedMirror = null;
+        let isRotating = false;
+        let activeEmitter = null;
+
+        function moveTarget() {
+            target.x = Math.floor(Math.random() * (1100 - 650 + 1)) + 650;
+            target.y = Math.floor(Math.random() * (400 - 100 + 1)) + 100;
+        }
+
+        function getCoords(e) {
+            const rect = canvas.getBoundingClientRect();
+            let clientX, clientY;
+            if (e.touches && e.touches.length > 0) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+            return {
+                x: (clientX - rect.left) * (canvas.width / rect.width),
+                y: (clientY - rect.top) * (canvas.height / rect.height)
+            };
+        }
+
+        function handleStart(e) {
+            const pos = getCoords(e);
+            const clickRadius = 40; // Mayor área táctil de selección
+
+            // 1. Comprobar si tocó el nodo de ROTACIÓN de un espejo
+            for (let m of mirrors) {
+                const handleX = m.x + (m.length / 2) * Math.cos(m.angle);
+                const handleY = m.y + (m.length / 2) * Math.sin(m.angle);
+                if (Math.hypot(pos.x - handleX, pos.y - handleY) < clickRadius) {
+                    draggedMirror = m;
+                    isRotating = true;
+                    return; // Detener para NO crear un rayo
+                }
+            }
+
+            // 2. Comprobar si tocó el nodo CENTRAL de un espejo
+            for (let m of mirrors) {
+                if (Math.hypot(pos.x - m.x, pos.y - m.y) < clickRadius) {
+                    draggedMirror = m;
+                    isRotating = false;
+                    return; // Detener para NO crear un rayo
+                }
+            }
+
+            // 3. Si no tocó ningún espejo, crear un nuevo emisor de láser
+            activeEmitter = {
+                x: pos.x,
+                y: pos.y,
+                dirX: 1,
+                dirY: -0.5,
+                color: laserColorInput.value
+            };
+            emitters.push(activeEmitter);
+        }
+
+        function handleMove(e) {
+            if (!draggedMirror && !activeEmitter) return;
+            const pos = getCoords(e);
+
+            if (draggedMirror) {
+                if (isRotating) {
+                    draggedMirror.angle = Math.atan2(pos.y - draggedMirror.y, pos.x - draggedMirror.x);
+                } else {
+                    draggedMirror.x = pos.x;
+                    draggedMirror.y = pos.y;
+                }
+            } else if (activeEmitter) {
+                const dx = pos.x - activeEmitter.x;
+                const dy = pos.y - activeEmitter.y;
+                const len = Math.hypot(dx, dy);
+                if (len > 0) {
+                    activeEmitter.dirX = dx / len;
+                    activeEmitter.dirY = dy / len;
+                }
+            }
+        }
+
+        function handleEnd() {
+            draggedMirror = null;
+            activeEmitter = null;
+        }
+
+        // EVENTOS DE RATÓN Y TÁCTILES UNIFICADOS
+        canvas.addEventListener('mousedown', handleStart);
+        window.addEventListener('mousemove', handleMove);
+        window.addEventListener('mouseup', handleEnd);
+
+        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); handleStart(e); }, { passive: false });
+        window.addEventListener('touchmove', (e) => { handleMove(e); }, { passive: false });
+        window.addEventListener('touchend', handleEnd);
+
+        clearRaysBtn.addEventListener('click', () => { emitters = []; });
+        clearMirrorsBtn.addEventListener('click', () => { mirrors = []; });
+        randomTargetBtn.addEventListener('click', moveTarget);
+        addMirrorBtn.addEventListener('click', () => {
+            mirrors.push({
+                x: 200 + Math.random() * 400,
+                y: 150 + Math.random() * 200,
+                length: 180,
+                angle: (Math.random() * 90) * Math.PI / 180
+            });
+        });
+
+        function drawTarget() {
+            const rings = [
+                { r: target.radius, color: '#ff0055' },
+                { r: target.radius * 0.7, color: '#ffffff' },
+                { r: target.radius * 0.4, color: '#ff0055' },
+                { r: target.radius * 0.15, color: '#ffff00' }
+            ];
+            rings.forEach(ring => {
+                ctx.beginPath();
+                ctx.arc(target.x, target.y, ring.r, 0, Math.PI * 2);
+                ctx.fillStyle = ring.color;
+                ctx.fill();
+            });
+        }
+
+        function drawLabel(text, x, y, bgColor = 'rgba(0,0,0,0.75)', textColor = '#ffffff') {
+            ctx.font = 'bold 12px sans-serif';
+            const width = ctx.measureText(text).width;
+            ctx.fillStyle = bgColor;
+            ctx.fillRect(x - width / 2 - 4, y - 10, width + 8, 16);
+            ctx.fillStyle = textColor;
+            ctx.textAlign = 'center';
+            ctx.fillText(text, x, y + 2);
+        }
+
+        function drawMirrors() {
+            mirrors.forEach(m => {
+                ctx.save();
+                ctx.translate(m.x, m.y);
+                ctx.rotate(m.angle);
+
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 6;
+                ctx.shadowBlur = 12;
+                ctx.shadowColor = '#00f0ff';
+                ctx.beginPath();
+                ctx.moveTo(-m.length / 2, 0);
+                ctx.lineTo(m.length / 2, 0);
+                ctx.stroke();
+
+                ctx.strokeStyle = '#555';
+                ctx.lineWidth = 2;
+                for (let i = -m.length / 2; i < m.length / 2; i += 12) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 3);
+                    ctx.lineTo(i - 4, 10);
+                    ctx.stroke();
+                }
+                ctx.restore();
+
+                // NODO CENTRAL (AZUL)
+                ctx.save();
+                ctx.fillStyle = '#00f0ff';
+                ctx.shadowColor = '#00f0ff';
+                ctx.shadowBlur = 8;
+                ctx.beginPath();
+                ctx.arc(m.x, m.y, 10, 0, Math.PI * 2);
+                ctx.fill();
+
+                // NODO DE ROTACIÓN (VERDE)
+                const handleX = m.x + (m.length / 2) * Math.cos(m.angle);
+                const handleY = m.y + (m.length / 2) * Math.sin(m.angle);
+                ctx.fillStyle = '#00ff66';
+                ctx.shadowColor = '#00ff66';
+                ctx.shadowBlur = 8;
+                ctx.beginPath();
+                ctx.arc(handleX, handleY, 12, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+
+                // DIBUJAR ÁNGULO DEL ESPEJO
+                let deg = Math.round((m.angle * 180 / Math.PI) % 360);
+                if (deg < 0) deg += 360;
+                drawLabel(`${deg}°`, handleX, handleY - 18, 'rgba(0, 255, 102, 0.25)', '#00ff66');
+            });
+        }
+
+        function traceRay(x, y, dx, dy, color, bounces = 0) {
+            if (bounces > 6) return;
+
+            let maxDist = 1800;
+            let closestHit = null;
+
+            mirrors.forEach(m => {
+                const x1 = m.x - (m.length / 2) * Math.cos(m.angle);
+                const y1 = m.y - (m.length / 2) * Math.sin(m.angle);
+                const x2 = m.x + (m.length / 2) * Math.cos(m.angle);
+                const y2 = m.y + (m.length / 2) * Math.sin(m.angle);
+
+                const denom = (x1 - x2) * (y - (y + dy)) - (y1 - y2) * (x - (x + dx));
+                if (Math.abs(denom) > 0.0001) {
+                    const t = ((x1 - x) * (y - (y + dy)) - (y1 - y) * (x - (x + dx))) / denom;
+                    const u = -((x1 - x2) * (y1 - y) - (y1 - y2) * (x1 - x)) / denom;
+
+                    if (t >= 0 && t <= 1 && u > 0.001) {
+                        const hitX = x1 + t * (x2 - x1);
+                        const hitY = y1 + t * (y2 - y1);
+                        const dist = Math.hypot(hitX - x, hitY - y);
+
+                        if (dist < maxDist) {
+                            maxDist = dist;
+                            closestHit = { hitX, hitY, mirror: m };
+                        }
+                    }
+                }
+            });
+
+            const endX = closestHit ? closestHit.hitX : x + dx * maxDist;
+            const endY = closestHit ? closestHit.hitY : y + dy * maxDist;
+
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 12;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+            ctx.restore();
+
+            if (closestHit) {
+                const m = closestHit.mirror;
+                let nx = -Math.sin(m.angle);
+                let ny = Math.cos(m.angle);
+
+                if (dx * nx + dy * ny > 0) {
+                    nx = -nx;
+                    ny = -ny;
+                }
+
+                const dot = dx * nx + dy * ny;
+                const rx = dx - 2 * dot * nx;
+                const ry = dy - 2 * dot * ny;
+
+                const cosTheta = Math.min(1, Math.max(-1, -dx * nx - dy * ny));
+                const incidentAngleDeg = Math.round(Math.acos(cosTheta) * (180 / Math.PI));
+
+                // LÍNEA NORMAL
+                ctx.save();
+                ctx.setLineDash([4, 4]);
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(closestHit.hitX, closestHit.hitY);
+                ctx.lineTo(closestHit.hitX + nx * 45, closestHit.hitY + ny * 45);
+                ctx.stroke();
+                ctx.restore();
+
+                // ETIQUETA ÁNGULO DE INCIDENCIA
+                drawLabel(`θi = θr = ${incidentAngleDeg}°`, closestHit.hitX + nx * 25, closestHit.hitY + ny * 25 - 15, 'rgba(255, 255, 0, 0.25)', '#ffff00');
+
+                traceRay(closestHit.hitX, closestHit.hitY, rx, ry, color, bounces + 1);
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            drawTarget();
+            drawMirrors();
+
+            emitters.forEach(em => {
+                ctx.save();
+                ctx.fillStyle = em.color;
+                ctx.shadowColor = em.color;
+                ctx.shadowBlur = 10;
+                ctx.beginPath();
+                ctx.arc(em.x, em.y, 8, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+
+                traceRay(em.x, em.y, em.dirX, em.dirY, em.color);
+            });
+
+            requestAnimationFrame(draw);
+        }
+
+        draw();
+    </script>
+</body>
+
+</html>
